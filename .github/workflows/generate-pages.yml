@@ -2,8 +2,11 @@ name: Generate Pages JSON
 
 on:
   push:
-    paths:
-      - 'pages/*.html'
+    branches:
+      - main
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -20,6 +23,9 @@ jobs:
 
           first=true
           for file in pages/*.html; do
+            # Skip if no HTML files exist
+            [ -e "$file" ] || continue
+
             name=$(basename "$file" .html)
             path="$file"
 
@@ -39,5 +45,11 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add data/pages.json
-          git commit -m "Auto-update pages.json" || echo "No changes"
-          git push
+
+          # Only commit and push if there are changes
+          if git diff --staged --quiet; then
+            echo "No changes to pages.json"
+          else
+            git commit -m "Auto-update pages.json"
+            git push
+          fi

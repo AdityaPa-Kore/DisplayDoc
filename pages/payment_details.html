@@ -1,0 +1,3949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Details Dialog - JavaScript Code Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        header p {
+            text-align: center;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.2);
+            padding: 15px 25px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .toc {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .toc h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .toc ul {
+            list-style: none;
+        }
+
+        .toc li {
+            margin: 10px 0;
+        }
+
+        .toc a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toc a:hover {
+            color: #764ba2;
+            transform: translateX(5px);
+        }
+
+        .node-count {
+            background: #e0e7ff;
+            color: #667eea;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px 12px 0 0;
+            margin: -30px -30px 30px -30px;
+        }
+
+        .section-header h2 {
+            font-size: 2em;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .node-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .node-card:hover {
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+
+        .node-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s;
+        }
+
+        .node-header:hover {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+        }
+
+        .node-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .node-title h3 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin: 0;
+        }
+
+        .node-type-badge {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .expand-icon {
+            font-size: 1.5em;
+            color: #667eea;
+            transition: transform 0.3s;
+        }
+
+        .node-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .node-content {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+        }
+
+        .node-card.expanded .node-content {
+            padding: 20px;
+            max-height: 10000px;
+        }
+
+        .node-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .meta-value {
+            font-family: 'Courier New', monospace;
+            color: #495057;
+            font-size: 0.9em;
+            word-break: break-all;
+        }
+
+        .code-section {
+            margin: 20px 0;
+        }
+
+        .code-section h4 {
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .code-icon {
+            color: #667eea;
+        }
+
+        pre {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', Consolas, Monaco, monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        code {
+            font-family: 'Courier New', Consolas, Monaco, monospace;
+        }
+
+        .variable-list {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+            margin: 10px 0;
+        }
+
+        .variable-list ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .variable-list li {
+            padding: 5px 0;
+            color: #495057;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .variable-list li:before {
+            content: "▸ ";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .context-reads {
+            border-left-color: #007bff;
+        }
+
+        .context-reads li:before {
+            color: #007bff;
+        }
+
+        .context-writes {
+            border-left-color: #dc3545;
+        }
+
+        .context-writes li:before {
+            color: #dc3545;
+        }
+
+        .explanation {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .explanation ul {
+            margin-left: 20px;
+        }
+
+        .explanation li {
+            margin: 5px 0;
+        }
+
+        .prompts-section {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #0d6efd;
+            margin: 10px 0;
+        }
+
+        .prompt-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+        }
+
+        .prompt-channel {
+            display: inline-block;
+            background: #0d6efd;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+        }
+
+        .conditions-section {
+            background: #f8d7da;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #dc3545;
+            margin: 10px 0;
+        }
+
+        .condition-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+        }
+
+        .condition-label {
+            font-weight: bold;
+            color: #dc3545;
+            margin-bottom: 5px;
+        }
+
+        .no-code {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .back-to-top {
+                display: none;
+            }
+            .node-content {
+                max-height: none !important;
+                padding: 20px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Payment Details Dialog</h1>
+            <p>Complete JavaScript Code Documentation</p>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">74</div>
+                    <div class="stat-label">Total Nodes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">19</div>
+                    <div class="stat-label">Script Nodes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">13</div>
+                    <div class="stat-label">Logic Nodes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">Service Nodes</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="toc">
+            <h2>📑 Table of Contents</h2>
+            <ul>
+                <li><a href="#script-nodes">💻 Script Nodes <span class="node-count">19</span></a></li>
+                <li><a href="#logic-nodes">🔀 Logic Nodes <span class="node-count">13</span></a></li>
+                <li><a href="#entity-nodes">📝 Entity Nodes <span class="node-count">3</span></a></li>
+                <li><a href="#service-nodes">🌐 Service Nodes <span class="node-count">5</span></a></li>
+                <li><a href="#dialogact-nodes">💬 DialogAct Nodes <span class="node-count">6</span></a></li>
+                <li><a href="#message-nodes">📨 Message Nodes <span class="node-count">5</span></a></li>
+                <li><a href="#intent-nodes">🎯 Intent Nodes <span class="node-count">23</span></a></li>
+            </ul>
+        </div>
+
+        <div class="section" id="script-nodes">
+            <div class="section-header">
+                <h2>💻 Script Nodes <span style="opacity: 0.8;">(19 nodes)</span></h2>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">script</span>
+                        <h3>TaxIDValidationScript</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-44e1c7f6-c3f0-5611-a2cf-2e534468729f</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-660d0acd-fff6-5056-91ad-b31ff68581bd</div>
+                        </div>
+                    </div>
+
+                    <div class="explanation">
+                        
+<h4>Purpose:</h4>
+<p>This script validates and processes Tax ID input from users. It handles both numeric and spoken word inputs (e.g., "one two three" → "123"), ensuring the Tax ID is exactly 9 digits before proceeding.</p>
+
+<h4>What Happens:</h4>
+<ol>
+<li><strong>Input Conversion:</strong> The <code>convertToDigits()</code> function takes the user's Tax ID input and converts it to a standardized numeric format:
+   <ul>
+   <li>Converts spoken numbers to digits ("one" → "1", "two" → "2", etc.)</li>
+   <li>Handles common speech recognition errors ("to"/"too" → "2")</li>
+   <li>Removes all non-numeric characters (spaces, dashes, etc.)</li>
+   <li>Validates the result is exactly 9 digits</li>
+   </ul>
+</li>
+
+<li><strong>Retry Counter Management:</strong> Increments <code>Taxcounter</code> to track how many times the user has attempted to provide a Tax ID. This prevents infinite retry loops.</li>
+
+<li><strong>Validation Logic:</strong>
+   <ul>
+   <li><strong>If Invalid:</strong> Sets <code>TaxID</code> flag to "false", deletes the entity to prompt again
+      <ul>
+      <li>If this is the 3rd attempt (<code>Taxcounter > 2</code>): Routes to agent transfer</li>
+      <li>Otherwise: Routes back to Tax ID collection for retry</li>
+      </ul>
+   </li>
+   <li><strong>If Valid:</strong> Sets <code>TaxID</code> flag to "true" and routes to Payment ID collection</li>
+   </ul>
+</li>
+
+<li><strong>Session Tagging:</strong> When max retries are exceeded, adds a session tag <code>PaymentDetailsCallFlow_TaxId_invalid</code> for analytics and reporting.</li>
+</ol>
+
+<h4>Why This Matters:</h4>
+<p>Tax IDs are critical identifiers in payment lookups. The conversion logic is essential because voice channels often capture spoken numbers as words. The retry limit (3 attempts) balances user experience with preventing abuse, while the validation ensures downstream APIs receive properly formatted 9-digit Tax IDs.</p>
+
+                    </div>
+
+                    <div class="code-section">
+                        <h4><span class="code-icon">📜</span> JavaScript Code</h4>
+                        <pre><code>function convertToDigits(input) {
+
+    if (typeof input !== &quot;string&quot;) {
+
+        input = String(input); // Convert to string if it&#39;s not already
+
+    }
+
+
+
+    const wordToDigit = {
+
+        &#39;zero&#39;: &#39;0&#39;, &#39;one&#39;: &#39;1&#39;, &#39;two&#39;: &#39;2&#39;, &#39;three&#39;: &#39;3&#39;, &#39;four&#39;: &#39;4&#39;,
+
+        &#39;five&#39;: &#39;5&#39;, &#39;six&#39;: &#39;6&#39;, &#39;seven&#39;: &#39;7&#39;, &#39;eight&#39;: &#39;8&#39;, &#39;nine&#39;: &#39;9&#39;,
+
+        &#39;to&#39;: &#39;2&#39;, &#39;too&#39;: &#39;2&#39;
+
+    };
+
+
+
+    // Replace word representations of numbers with their digit equivalents
+
+    input = input.toLowerCase().replace(/(zero|one|two|three|four|five|six|seven|eight|nine|to|too)/g, match =&gt; wordToDigit[match]);
+
+
+
+    // Remove non-digit characters
+
+    let result = input.replace(/[^0-9]/g, &#39;&#39;);
+
+
+
+    return (result.length === 9) ? result : &#39;Invalid Input&#39;;
+
+}
+
+
+
+koreDebugger.log(&quot;TaxID:&quot; + context.session.BotUserSession.TaxID);
+
+koreDebugger.log(&quot;TaxID2:&quot; + context.entities.TaxID);
+
+
+
+context.entities.TaxID = convertToDigits(context.entities.TaxID);
+
+
+
+koreDebugger.log(&quot;TaxID3:&quot;+context.entities.TaxID);
+
+
+
+context.session.BotUserSession.Taxcounter++;
+
+if(context.entities.TaxID == &quot;Invalid Input&quot;){
+
+    context.session.BotUserSession.TaxID = &quot;false&quot;;
+
+    delete context.entities.TaxID;
+
+//    koreDebugger.log(&quot;Tax invalid input path&quot;);
+
+    if (context.session.BotUserSession.Taxcounter&gt;2) {
+
+        context.session.BotUserSession.Routing = &quot;AgentTransfer&quot;
+
+       tags.addSessionLevelTag(&quot;PaymentDetailsCallFlow_TaxId_invalid&quot;, &quot;3Invalid_TaxId_input&quot;);
+
+
+
+    }
+
+    else {
+
+        context.session.BotUserSession.Routing = &quot;TaxID&quot;
+
+    }
+
+}
+
+else{
+
+    context.session.BotUserSession.TaxID = &quot;true&quot;;
+
+    context.session.BotUserSession.Routing = &quot;PaymentID&quot;
+
+}
+
+
+
+
+
+
+
+//koreDebugger.log(&quot;TC:&quot;+context.session.BotUserSession.CurrentEntityPath);
+
+//koreDebugger.log(&quot;TC:&quot;+context.session.BotUserSession.Taxcounter);
+
+//koreDebugger.log(&quot;PC:&quot;+context.session.BotUserSession.Paymentcounter);
+
+//koreDebugger.log(&quot;TaxID:&quot;+context.session.BotUserSession.TaxID);
+
+//koreDebugger.log(&quot;TEntity:&quot;+context.session.BotUserSession.TaxEntity);
+
+//koreDebugger.log(&quot;PaymentId:&quot;+context.session.BotUserSession.PaymentID);
+
+//koreDebugger.log(&quot;Routing:&quot;+context.session.BotUserSession.Routing);
+
+
+
+</code></pre>
+                    </div>
+
+                    <div class="variable-list">
+                        <h4>Variables Declared</h4>
+                        <ul>
+                            <li>wordToDigit</li>
+                            <li>result</li>
+                        </ul>
+                    </div>
+
+                    <div class="variable-list context-reads">
+                        <h4>Context Variables Read</h4>
+                        <ul>
+                            <li>context.entities.TaxID</li>
+                            <li>context.session.BotUserSession.CurrentEntityPath</li>
+                            <li>context.session.BotUserSession.PaymentID</li>
+                            <li>context.session.BotUserSession.Paymentcounter</li>
+                            <li>context.session.BotUserSession.Routing</li>
+                            <li>context.session.BotUserSession.TaxEntity</li>
+                            <li>context.session.BotUserSession.TaxID</li>
+                            <li>context.session.BotUserSession.Taxcounter</li>
+                        </ul>
+                    </div>
+
+                    <div class="variable-list context-writes">
+                        <h4>Context Variables Written</h4>
+                        <ul>
+                            <li>context.entities.TaxID</li>
+                            <li>context.session.BotUserSession.Routing</li>
+                            <li>context.session.BotUserSession.TaxID</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">script</span>
+                        <h3>ClaimIDValidationScript</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-9aaf925f-237c-56f5-9e33-27c1fa9e44e5</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-a08c1373-41c5-57cd-8ccc-fd5101a4a4f4</div>
+                        </div>
+                    </div>
+
+                    <div class="explanation">
+                        
+<h4>Purpose:</h4>
+<p>This script handles Claim ID validation as an alternative lookup path. Users can provide Claim ID instead of Tax ID + Payment ID combination.</p>
+
+<h4>What Happens:</h4>
+<ol>
+<li><strong>Input Processing:</strong> The <code>convertToDigitIE()</code> function processes Claim ID with flexible validation:
+   <ul>
+   <li>Converts spoken numbers to digits</li>
+   <li>Removes periods (common in claim numbers)</li>
+   <li>Accepts variable length (6-21 characters) unlike fixed 9-digit Tax ID</li>
+   </ul>
+</li>
+
+<li><strong>Flexible Validation:</strong> Claim IDs have more lenient validation because they vary by payer and claim type. The length check (6-21 chars) accommodates different claim numbering systems.</li>
+
+<li><strong>Routing Decision:</strong>
+   <ul>
+   <li><strong>If Invalid:</strong> Sets <code>Routing = "claimid"</code> to prompt again</li>
+   <li><strong>If Valid:</strong> Sets <code>Routing = "claimlookup"</code> and <code>UseClaimID = "true"</code> to trigger Claim API instead of Payment API</li>
+   </ul>
+</li>
+</ol>
+
+<h4>Why This Matters:</h4>
+<p>Claim ID lookup provides an alternative when users don't have Tax ID or Payment ID readily available. This improves user experience by offering multiple ways to retrieve payment information. The <code>UseClaimID</code> flag ensures the correct API endpoint is called downstream.</p>
+
+                    </div>
+
+                    <div class="code-section">
+                        <h4><span class="code-icon">📜</span> JavaScript Code</h4>
+                        <pre><code>function convertToDigitIE(input) {
+    if (typeof input !== &quot;string&quot;) {
+        input = String(input); // Convert to string if it&#39;s not already
+    }
+
+    const wordToDigit = {
+        &#39;zero&#39;: &#39;0&#39;, &#39;one&#39;: &#39;1&#39;, &#39;two&#39;: &#39;2&#39;, &#39;three&#39;: &#39;3&#39;, &#39;four&#39;: &#39;4&#39;,
+        &#39;five&#39;: &#39;5&#39;, &#39;six&#39;: &#39;6&#39;, &#39;seven&#39;: &#39;7&#39;, &#39;eight&#39;: &#39;8&#39;, &#39;nine&#39;: &#39;9&#39;,
+        &#39;to&#39;: &#39;2&#39;, &#39;too&#39;: &#39;2&#39;
+    };
+
+    // Replace word representations of numbers with their digit equivalents
+    input = input.toLowerCase().replace(/(zero|one|two|three|four|five|six|seven|eight|nine|to|too)/g, match =&gt; wordToDigit[match]);
+
+    // Remove periods 
+    let result = input.replace(/\./g, &#39;&#39;);
+//    let result = input;
+    return (result.length &gt;= 6 &amp;&amp; result.length &lt;= 21) ? result : result;//&#39;Invalid Input&#39;;
+}
+
+    context.entities.ClaimID = convertToDigitIE(context.NLAnalysis.userInput);
+
+    if(context.entities.ClaimID == &quot;Invalid Input&quot;){
+         context.session.BotUserSession.ClaimID = &quot;false&quot;;
+         delete context.entities.ClaimID;
+         context.session.BotUserSession.Claimcounter++;
+      //   context.session.BotUserSession.MemberIDPrompt = &quot;I&#39;m sorry, I am unable to recognize Member ID. Could you please provide your Member ID for verification? If you need more time, just say &#39;Wait,&#39; and when you&#39;re ready, say &#39;I&#39;m ready&quot;;
+      context.session.BotUserSession.Routing = &quot;claimid&quot;
+    }
+    else{
+        context.session.BotUserSession.ClaimID = &quot;true&quot;;
+        context.session.BotUserSession.Routing = &quot;claimlookup&quot;
+        context.session.BotUserSession.UseClaimID = &quot;true&quot;;
+    }   
+
+//koreDebugger.log(&quot;validate claim:&quot;+context.entities.ClaimID);
+
+
+
+
+</code></pre>
+                    </div>
+
+                    <div class="variable-list">
+                        <h4>Variables Declared</h4>
+                        <ul>
+                            <li>wordToDigit</li>
+                            <li>result</li>
+                            <li>result</li>
+                        </ul>
+                    </div>
+
+                    <div class="variable-list context-reads">
+                        <h4>Context Variables Read</h4>
+                        <ul>
+                            <li>context.NLAnalysis.userInput</li>
+                            <li>context.entities.ClaimID</li>
+                            <li>context.session.BotUserSession.ClaimID</li>
+                            <li>context.session.BotUserSession.Claimcounter</li>
+                            <li>context.session.BotUserSession.MemberIDPrompt</li>
+                            <li>context.session.BotUserSession.Routing</li>
+                            <li>context.session.BotUserSession.UseClaimID</li>
+                        </ul>
+                    </div>
+
+                    <div class="variable-list context-writes">
+                        <h4>Context Variables Written</h4>
+                        <ul>
+                            <li>context.entities.ClaimID</li>
+                            <li>context.session.BotUserSession.ClaimID</li>
+                            <li>context.session.BotUserSession.MemberIDPrompt</li>
+                            <li>context.session.BotUserSession.Routing</li>
+                            <li>context.session.BotUserSession.UseClaimID</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">script</span>
+                        <h3>RetryClaimIDScript</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-14f15cae-a1d3-5604-a95f-8fd47154fa55</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-b4f96363-1f4c-5b48-94a9-c004a8f939a1</div>
+                        </div>
+                    </div>
+
+                    <div class="explanation">
+                        
+<h4>Purpose:</h4>
+<p>This script manages retry logic by clearing the collected entity so the user can be prompted again. It's a cleanup operation that resets the conversation state for another attempt.</p>
+
+<h4>What Happens:</h4>
+<ol>
+<li><strong>Entity Deletion:</strong> Uses <code>delete context.entities.[EntityName]</code> to remove the invalid or rejected value from context.</li>
+
+<li><strong>State Reset:</strong> Clears any validation flags or temporary variables associated with the entity.</li>
+
+<li><strong>Routing:</strong> Sets the routing variable to return to the entity collection node.</li>
+</ol>
+
+<h4>Why This Matters:</h4>
+<p>If we don't delete the entity, the dialog won't re-prompt the user - it will assume the value is still available. This deletion forces the entity node to trigger again, allowing the user to provide a corrected value. It's essential for the retry flow to work properly.</p>
+
+                    </div>
+
+                    <div class="code-section">
+                        <h4><span class="code-icon">📜</span> JavaScript Code</h4>
+                        <pre><code>
+    delete context.entities.ClaimID;
+</code></pre>
+                    </div>
+
+                    <div class="variable-list context-reads">
+                        <h4>Context Variables Read</h4>
+                        <ul>
+                            <li>context.entities.ClaimID</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">script</span>
+                        <h3>EntityValidationScript</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-7efa322a-32a9-5238-8686-93d494f7c601</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-c27ad637-4b3c-5db1-b671-a04fb2032115</div>
+                        </div>
+                    </div>
+
+                    <div class="explanation">
+                        
+<h4>Purpose:</h4>
+<p>This script validates and processes Tax ID input from users. It handles both numeric and spoken word inputs (e.g., "one two three" → "123"), ensuring the Tax ID is exactly 9 digits before proceeding.</p>
+
+<h4>What Happens:</h4>
+<ol>
+<li><strong>Input Conversion:</strong> The <code>convertToDigits()</code> function takes the user's Tax ID input and converts it to a standardized numeric format:
+   <ul>
+   <li>Converts spoken numbers to digits ("one" → "1", "two" → "2", etc.)</li>
+   <li>Handles common speech recognition errors ("to"/"too" → "2")</li>
+   <li>Removes all non-numeric characters (spaces, dashes, etc.)</li>
+   <li>Validates the result is exactly 9 digits</li>
+   </ul>
+</li>
+
+<li><strong>Retry Counter Management:</strong> Increments <code>Taxcounter</code> to track how many times the user has attempted to provide a Tax ID. This prevents infinite retry loops.</li>
+
+<li><strong>Validation Logic:</strong>
+   <ul>
+   <li><strong>If Invalid:</strong> Sets <code>TaxID</code> flag to "false", deletes the entity to prompt again
+      <ul>
+      <li>If this is the 3rd attempt (<code>Taxcounter > 2</code>): Routes to agent transfer</li>
+      <li>Otherwise: Routes back to Tax ID collection for retry</li>
+      </ul>
+   </li>
+   <li><strong>If Valid:</strong> Sets <code>TaxID</code> flag to "true" and routes to Payment ID collection</li>
+   </ul>
+</li>
+
+<li><strong>Session Tagging:</strong> When max retries are exceeded, adds a session tag <code>PaymentDetailsCallFlow_TaxId_invalid</code> for analytics and reporting.</li>
+</ol>
+
+<h4>Why This Matters:</h4>
+<p>Tax IDs are critical identifiers in payment lookups. The conversion logic is essential because voice channels often capture spoken numbers as words. The retry limit (3 attempts) balances user experience with preventing abuse, while the validation ensures downstream APIs receive properly formatted 9-digit Tax IDs.</p>
+
+                    </div>
+
+                    <div class="code-section">
+                        <h4><span class="code-icon">📜</span> JavaScript Code</h4>
+                        <pre><code>function convertToDigits(input) {
+
+    if (typeof input !== &quot;string&quot;) {
+
+        input = String(input); // Convert to string if it&#39;s not already
+
+    }
+
+
+
+    const wordToDigit = {
+
+        &#39;zero&#39;: &#39;0&#39;, &#39;one&#39;: &#39;1&#39;, &#39;two&#39;: &#39;2&#39;, &#39;three&#39;: &#39;3&#39;, &#39;four&#39;: &#39;4&#39;,
+
+        &#39;five&#39;: &#39;5&#39;, &#39;six&#39;: &#39;6&#39;, &#39;seven&#39;: &#39;7&#39;, &#39;eight&#39;: &#39;8&#39;, &#39;nine&#39;: &#39;9&#39;,
+
+        &#39;to&#39;: &#39;2&#39;, &#39;too&#39;: &#39;2&#39;
+
+    };
+
+
+
+    // Replace word representations of numbers with their digit equivalents
+
+    input = input.toLowerCase().replace(/(zero|one|two|three|four|five|six|seven|eight|nine|to|too)/g, match =&gt; wordToDigit[match]);
+
+
+
+    // Remove non-digit characters
+
+    let result = input.replace(/[^0-9]/g, &#39;&#39;);
+
+
+
+    return (result.length === 9) ? result : &#39;Invalid Input&#39;;
+
+}
+
+
+
+
+
+function convertToDigit(input) {
+
+    if (typeof input !== &quot;string&quot;) {
+
+        input = String(input); // Convert to string if it&#39;s not already
+
+    }
+
+
+
+    const wordToDigit = {
+
+        &#39;zero&#39;: &#39;0&#39;, &#39;one&#39;: &#39;1&#39;, &#39;two&#39;: &#39;2&#39;, &#39;three&#39;: &#39;3&#39;, &#39;four&#39;: &#39;4&#39;,
+
+        &#39;five&#39;: &#39;5&#39;, &#39;six&#39;: &#39;6&#39;, &#39;seven&#39;: &#39;7&#39;, &#39;eight&#39;: &#39;8&#39;, &#39;nine&#39;: &#39;9&#39;,
+
+        &#39;to&#39;: &#39;2&#39;, &#39;too&#39;: &#39;2&#39;
+
+    };
+
+
+
+    // Replace word representations of numbers with their digit equivalents
+
+    input = input.toLowerCase().replace(/(zero|one|two|three|four|five|six|seven|eight|nine|to|too)/g, match =&gt; wordToDigit[match]);
+
+
+
+    // Remove non-digit characters
+
+    let result = input.replace(/[^0-9]/g, &#39;&#39;);
+
+
+
+    return (result.length &gt;= 8 &amp;&amp; result.length &lt;= 10) ? result : &#39;Invalid Input &#39;+result;
+
+}
+
+
+
+
+
+function convertToDigitIE(input) {
+
+    if (typeof input !== &quot;string&quot;) {
+
+        input = String(input); // Convert to string if it&#39;s not already
+
+    }
+
+
+
+    const wordToDigit = {
+
+        &#39;zero&#39;: &#39;0&#39;, &#39;one&#39;: &#39;1&#39;, &#39;two&#39;: &#39;2&#39;, &#39;three&#39;: &#39;3&#39;, &#39;four&#39;: &#39;4&#39;,
+
+        &#39;five&#39;: &#39;5&#39;, &#39;six&#39;: &#39;6&#39;, &#39;seven&#39;: &#39;7&#39;, &#39;eight&#39;: &#39;8&#39;, &#39;nine&#39;: &#39;9&#39;,
+
+        &#39;to&#39;: &#39;2&#39;, &#39;too&#39;: &#39;2&#39;
+
+    };
+
+
+
+    // Replace word representations of numbers with their digit equivalents
+
+    input = input.toLowerCase().replace(/(zero|one|two|three|four|five|six|seven|eight|nine|to|too)/g, match =&gt; wordToDigit[match]);
+
+
+
+    // Remove non-digit characters
+
+    let result = input.replace(/[^0-9]/g, &#39;&#39;);
+
+
+
+    return (result.length &gt;= 6 &amp;&amp; result.length &lt;= 21) ? result : result;//&#39;Invalid Input&#39;;
+
+}
+
+
+
+
+
+
+
+//koreDebugger.log(&quot;TaxEntity:&quot;+context.session.BotUserSession.TaxEntity);
+
+
+
+if(context.session.BotUserSession.NonEPC == &quot;true&quot;){
+
+    if(context.session.BotUserSession.CurrentEntityPath==&quot;PaymentId&quot;){
+
+//    if(context.session.BotUserSession.TaxEntity &amp;&amp; context.session.BotUserSession.TaxEntity == &quot;True&quot;){
+
+        context.entities.PaymentID = convertToDigit(context.entities.PaymentID);
+
+        context.session.BotUserSession.Paymentcounter++;
+
+        if(context.entities.PaymentID == &quot;Invalid Input&quot;){
+
+            context.session.BotUserSession.PaymentID = &quot;false&quot;;
+
+            delete context.entities.PaymentID;
+
+            koreDebugger.log(&quot;Payment invalid input path&quot;);
+
+        }
+
+        else{
+
+            context.session.BotUserSession.PaymentID = &quot;true&quot;;
+
+        }   
+
+    }
+
+    else{
+
+        context.entities.TaxID = convertToDigits(context.entities.TaxID);
+
+        context.session.BotUserSession.Taxcounter++;
+
+        if(context.entities.TaxID == &quot;Invalid Input&quot;){
+
+            context.session.BotUserSession.TaxID = &quot;false&quot;;
+
+            delete context.entities.TaxID;
+
+            koreDebugger.log(&quot;Tax invalid input path&quot;);
+
+        }
+
+        else{
+
+            context.session.BotUserSession.TaxID = &quot;true&quot;;
+
+        }
+
+    }
+
+}
+
+else{
+
+    context.entities.MemberID = convertToDigitIE(context.NLAnalysis.userInput);
+
+    if(context.entities.MemberID == &quot;Invalid Input&quot;){
+
+         context.session.BotUserSession.MemberID = &quot;false&quot;;
+
+         delete context.entities.MemberID;
+
+         context.session.BotUserSession.Membercounter++;
+
+         context.session.BotUserSession.MemberIDPrompt = &quot;I&#39;m sorry, I am unable to recognize Member ID. Could you please provide your Member ID for verification? If you need more time, just say &#39;Wait,&#39; and when you&#39;re ready, say &#39;I&#39;m ready&quot;;
+
+    }
+
+    else{
+
+        context.session.BotUserSession.MemberID = &quot;true&quot;;
+
+    }   
+
+}
+
+//koreDebugger.log(&quot;TC:&quot;+context.session.BotUserSession.CurrentEntityPath);
+
+//koreDebugger.log(&quot;TC:&quot;+context.session.BotUserSession.Taxcounter);
+
+//koreDebugger.log(&quot;PC:&quot;+context.session.BotUserSession.Paymentcounter);
+
+//koreDebugger.log(&quot;TaxID:&quot;+context.session.BotUserSession.TaxID);
+
+//koreDebugger.log(&quot;TEntity:&quot;+context.session.BotUserSession.TaxEntity);
+
+//koreDebugger.log(&quot;PaymentId:&quot;+context.session.BotUserSession.PaymentID);
+
+
+
+</code></pre>
+                    </div>
+
+                    <div class="variable-list">
+                        <h4>Variables Declared</h4>
+                        <ul>
+                            <li>wordToDigit</li>
+                            <li>result</li>
+                            <li>wordToDigit</li>
+                            <li>result</li>
+                            <li>wordToDigit</li>
+                            <li>result</li>
+                        </ul>
+                    </div>
+
+                    <div class="variable-list context-reads">
+                        <h4>Context Variables Read</h4>
+                        <ul>
+                            <li>context.NLAnalysis.userInput</li>
+                            <li>context.entities.MemberID</li>
+                            <li>context.entities.PaymentID</li>
+                            <li>context.entities.TaxID</li>
+                            <li>context.session.BotUserSession.CurrentEntityPath</li>
+                            <li>context.session.BotUserSession.MemberID</li>
+                            <li>context.session.BotUserSession.MemberIDPrompt</li>
+                            <li>context.session.BotUserSession.Membercounter</li>
+                            <li>context.session.BotUserSession.NonEPC</li>
+                            <li>context.session.BotUserSession.PaymentID</li>
+                            <li>context.session.BotUserSession.Paymentcounter</li>
+                            <li>context.session.BotUserSession.TaxEntity</li>
+                            <li>context.session.BotUserSession.TaxID</li>
+                            <li>context.session.BotUserSession.Taxcounter</li>
+                        </ul>
+                    </div>
+
+                    <div class="variable-list context-writes">
+                        <h4>Context Variables Written</h4>
+                        <ul>
+                            <li>context.entities.MemberID</li>
+                            <li>context.entities.PaymentID</li>
+                            <li>context.entities.TaxID</li>
+                            <li>context.session.BotUserSession.CurrentEntityPath</li>
+                            <li>context.session.BotUserSession.MemberID</li>
+                            <li>context.session.BotUserSession.MemberIDPrompt</li>
+                            <li>context.session.BotUserSession.NonEPC</li>
+                            <li>context.session.BotUserSession.PaymentID</li>
+                            <li>context.session.BotUserSession.TaxEntity</li>
+                            <li>context.session.BotUserSession.TaxID</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">script</span>
+                        <h3>Clearing_TaxID</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-c84a11ef-fb38-519a-a0aa-e4a6633e5aef</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-b789dfa8-ab26-54db-bc26-2b4fce17b55e</div>
+                        </div>
+                    </div>
+
+                    <div class="explanation">
+                        
+<h4>Purpose:</h4>
+<p>This script prepares the necessary context variables and parameters before calling the Payment Details API. It acts as a pre-processor to ensure all required data is available and properly formatted.</p>
+
+<h4>What Happens:</h4>
+<ol>
+<li><strong>Parameter Collection:</strong> Gathers the validated Tax ID and Payment ID from session context.</li>
+
+<li><strong>Data Formatting:</strong> Ensures all parameters are in the correct format expected by the API:
+   <ul>
+   <li>Tax ID: 9-digit numeric string</li>
+   <li>Payment ID: Validated identifier</li>
+   </ul>
+</li>
+
+<li><strong>Context Setup:</strong> Sets flags and variables that will be used by the API service node:
+   <ul>
+   <li>API parameter mapping</li>
+   <li>Request headers configuration</li>
+   <li>Error handling flags</li>
+   </ul>
+</li>
+</ol>
+
+<h4>Why This Matters:</h4>
+<p>API calls require properly structured requests. This preparation step prevents API failures due to missing or malformed parameters. It also centralizes data transformation logic, making the API service node cleaner and more maintainable.</p>
+
+                    </div>
+
+                    <div class="code-section">
+                        <h4><span class="code-icon">📜</span> JavaScript Code</h4>
+                        <pre><code>delete context.entities.TaxID;
+delete context.entities.PaymentID;
+delete context.entities.ClaimID;
+context.session.BotUserSession.TaxEntity = &quot;False&quot;;
+context.session.BotUserSession.Taxcounter = 0;
+context.session.BotUserSession.Paymentcounter = 0;</code></pre>
+                    </div>
+
+                    <div class="variable-list context-reads">
+                        <h4>Context Variables Read</h4>
+                        <ul>
+                            <li>context.entities.ClaimID</li>
+                            <li>context.entities.PaymentID</li>
+                            <li>context.entities.TaxID</li>
+                            <li>context.session.BotUserSession.Paymentcounter</li>
+                            <li>context.session.BotUserSession.TaxEntity</li>
+                            <li>context.session.BotUserSession.Taxcounter</li>
+                        </ul>
+                    </div>
+
+                    <div class="variable-list context-writes">
+                        <h4>Context Variables Written</h4>
+                        <ul>
+                            <li>context.session.BotUserSession.Paymentcounter</li>
+                            <li>context.session.BotUserSession.TaxEntity</li>
+                            <li>context.session.BotUserSession.Taxcounter</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">script</span>
+                        <h3>SignalAPI_init</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-6e2db52b-4db7-5f6d-8fc4-c21f3b48713c</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-5fdb93c4-dff3-5250-91f3-033e88d96130</div>
+                        </div>
+                    </div>
+
+                    <div class="explanation">
+                        
+<h4>Purpose:</h4>
+<p>This script handles API failure scenarios by implementing retry logic. It attempts to recover from transient failures without immediately escalating to an agent.</p>
+
+<h4>What Happens:</h4>
+<ol>
+<li><strong>Retry Counter Check:</strong> Examines <code>RetryPaymentAPI</code> counter to determine if retry is allowed (max 2 attempts).</li>
+
+<li><strong>Error Analysis:</strong> Checks the API response status code:
+   <ul>
+   <li><strong>401 (Unauthorized):</strong> Token expired, routes to token refresh node</li>
+   <li><strong>500 (Server Error):</strong> Transient failure, eligible for retry</li>
+   <li><strong>404 (Not Found):</strong> Invalid Tax ID/Payment ID, no retry needed</li>
+   <li><strong>Timeout:</strong> Network issue, eligible for retry</li>
+   </ul>
+</li>
+
+<li><strong>Retry Decision:</strong>
+   <ul>
+   <li><strong>If retry count < 2:</strong> Increment counter and route back to API call</li>
+   <li><strong>If retry count >= 2:</strong> Route to agent transfer with error context</li>
+   </ul>
+</li>
+
+<li><strong>Context Preservation:</strong> Maintains all collected entities (Tax ID, Payment ID) so retry doesn't require re-collection.</li>
+</ol>
+
+<h4>Why This Matters:</h4>
+<p>APIs can fail temporarily due to network issues, service restarts, or high load. Automatic retry improves success rates without bothering the user. However, limiting to 2 retries prevents long waits. The 401 token refresh handling is critical - expired tokens are expected in long conversations, and auto-refresh provides seamless user experience.</p>
+
+                    </div>
+
+                    <div class="code-section">
+                        <h4><span class="code-icon">📜</span> JavaScript Code</h4>
+                        <pre><code>function constructURL() {
+
+  const baseURL = &quot;https://api-c37.nice-incontact.com/incontactapi/services/v31.0/interactions/&quot;;
+
+  const contactID = context.session.BotUserSession.ContactID;
+
+  const P1 = context.session.BotUserSession.P1 || &quot;AgentHandoff&quot;;
+
+  const P2 = context.session.BotUserSession.P2 || &quot;Not Captured&quot;;
+
+  const P3 = context.session.BotUserSession.P3 || &quot;Not Captured&quot;;
+
+  const P4 = context.session.BotUserSession.P4 || &quot;Not Captured&quot;;
+
+  const P5 = context.session.BotUserSession.P5 || &quot;Not Captured&quot;;
+
+  const P6 = context.session.BotUserSession.P6 || &quot;Not Captured&quot;;
+
+  const P7 = context.session.BotUserSession.P7 || &quot;Not Captured&quot;;
+
+  const P8 = context.session.BotUserSession.P8 || &quot;Not Captured&quot;;
+
+  tags.addSessionLevelTag(&quot;CallOutcome&quot;, P1);
+
+
+
+  let url = `${baseURL}${contactID}/signal?p1=${P1}&amp;p2=${P2}`;
+
+
+
+  if (context.session.BotUserSession.EPC === &quot;true&quot; || context.session.BotUserSession.NonEPC === &quot;true&quot;) {
+
+    url += `&amp;p3=${P3}`;
+
+    url += `&amp;p8=${P8}`;
+
+  } else if (context.session.BotUserSession.IEDNIS === &quot;true&quot;) {
+
+    url += `&amp;p3=${P3}`;
+
+    [P4, P5, P6, P7].forEach((param, index) =&gt; {
+
+      url += `&amp;p${index + 4}=${param}`;
+
+    });
+
+  }
+
+
+
+  return url;
+
+}
+
+
+
+
+
+if(context.session.BotUserSession.FaxService == &quot;true&quot;){
+
+    context.session.BotUserSession.P1 = &quot;FaxService&quot;;
+
+}
+
+
+
+/*if(context.currentTags.tags.includes(&quot;Agent Transfer&quot;)){
+
+     context.session.BotUserSession.P1 = &quot;AgentRequested&quot;;
+
+}*/
+
+
+
+context.session.BotUserSession.AgentLocation = context.session.BotUserSession.AgentLocation || &quot;OnshoreAgentHandoff&quot;;
+
+context.session.BotUserSession.retryAPIAttempt = 0;
+
+
+
+if (context.session.BotUserSession.EPC == &quot;true&quot;) {
+
+  context.session.BotUserSession.P3 = context.session.BotUserSession.PayerEntity == &quot;true&quot; &amp;&amp; context.session.BotUserSession.ConfirmInput == &quot;Yes&quot;
+
+    ? context.session.BotUserSession.NearMatch?.payername || &quot;Not Provided&quot;
+
+    : &quot;Not Provided&quot;;
+
+
+
+  context.session.BotUserSession.P2 = context.session.BotUserSession.AgentLocation;
+
+  context.session.BotUserSession.APIURL = constructURL();
+
+}
+
+
+
+if (context.session.BotUserSession.IEDNIS == &quot;true&quot;) {
+
+    koreDebugger.log(&quot;Entering IEDNIS&quot;);
+
+  context.session.BotUserSession.P4 = context.entities.DateOfBirth || &quot;Not Captured&quot;;
+
+  context.session.BotUserSession.P2 = context.entities.Language || &quot;English&quot;;
+
+  context.session.BotUserSession.P3 = context.session.BotUserSession.MemberID|| &quot;Not Captured&quot;;
+
+  context.session.BotUserSession.P7 = context.MemberInfoValidation?.response?.body?.records?.[0]?.Id || &quot;Not Captured&quot;;
+
+  context.session.BotUserSession.P5 = context.entities.ZIPCode || &quot;Not Captured&quot;;
+
+  context.session.BotUserSession.P6 = context.MemberInfoValidation?.response?.body?.totalSize &gt; 0 ? &quot;Authenticated&quot; : &quot;Not Verified&quot;;
+
+  context.session.BotUserSession.APIURL = constructURL();
+
+
+
+//set session level tags for reporting
+
+    if (context.session.BotUserSession.P3==&quot;Not Captured&quot;) {
+
+        tags.addSessionLevelTag(&quot;CapturedMemberId&quot;, &quot;No&quot;);
+
+    } else {
+
+        tags.addSessionLevelTag(&quot;CapturedMemberId&quot;, &quot;Yes&quot;);
+
+    }
+
+    if (context.session.BotUserSession.P4==&quot;Not Captured&quot;) {
+
+        tags.addSessionLevelTag(&quot;CapturedDOB&quot;, &quot;No&quot;);
+
+    } else {
+
+        tags.addSessionLevelTag(&quot;CapturedDOB&quot;, &quot;Yes&quot;);
+
+    }
+
+    if (context.session.BotUserSession.P5==&quot;Not Captured&quot;) {
+
+        tags.addSessionLevelTag(&quot;CapturedZip&quot;, &quot;No&quot;);
+
+    } else {
+
+        tags.addSessionLevelTag(&quot;CapturedZip&quot;, &quot;Yes&quot;);
+
+    }
+
+    tags.addSessionLevelTag(&quot;LanguageOption&quot;, context.session.BotUserSession.P2 );
+
+    if (context.session.BotUserSession.P6==&quot;Authenticated&quot;) {
+
+        tags.addSessionLevelTag(&quot;MemberVerified&quot;, &quot;Yes&quot;);
+
+    }
+
+    else
+
+    {
+
+        tags.addSessionLevelTag(&quot;MemberVerified&quot;, &quot;No&quot;);
+
+    }
+
+}
+
+
+
+if (context.session.BotUserSession.NonEPC == &quot;true&quot;) {
+
+  context.session.BotUserSession.P2 = context.Payments_Details?.response?.body?.paymentId ?? context.entities.PaymentID ?? &quot;No Record Found&quot;;
+
+  const PIDTransferred = (context.session.BotUserSession.P2 == &quot;No Record Found&quot;) ? &quot;Yes&quot; : &quot;No&quot;;
+
+  tags.addSessionLevelTag(&quot;HasPID&quot;, PIDTransferred);
+
+  
+
+  context.session.BotUserSession.P3 = context.Payments_Details?.response?.body?.tin ?? context.entities.TaxID ?? &quot;Not Captured&quot;;
+
+  const TINTransferred = (context.session.BotUserSession.P3 == &quot;Not Captured&quot;) ? &quot;Yes&quot; : &quot;No&quot;;
+
+  tags.addSessionLevelTag(&quot;HasTIN&quot;, TINTransferred);
+
+  
+
+  if (context.session.BotUserSession.InitialIntent==&quot;TaxQuestions&quot;)
+
+  {
+
+      context.session.BotUserSession.P8 = 10647717; //ZP_CS_1099
+
+        tags.addSessionLevelTag(&quot;CXoneSkill&quot;, &quot;ZP_CS_1099&quot;);
+
+  }
+
+  
+
+  context.session.BotUserSession.APIURL = constructURL();
+
+}
+
+
+
+if (!context.session.BotUserSession.AuthTagSet &amp;&amp; context.entities.MemberID &amp;&amp; context.session.BotUserSession.IEDNIS == &quot;true&quot;) {
+
+  const tagValue = context.session.BotUserSession.P6 == &quot;Authenticated&quot; ? &quot;Authenticated&quot; : &quot;Not Verified&quot;;
+
+  tags.addSessionLevelTag(&quot;Auth&quot;, tagValue);
+
+  context.session.BotUserSession.AuthTagSet = true;
+
+}
+
+
+
+if (!context.session.BotUserSession.AgentLocationTagSet &amp;&amp; context.session.BotUserSession.EPC == &quot;true&quot;) {
+
+  const locationTag = context.session.BotUserSession.P2.includes(&quot;Onshore&quot;) ? &quot;Onshore&quot; : &quot;Offshore&quot;;
+
+  tags.addSessionLevelTag(&quot;AgentLocation&quot;, locationTag);
+
+  context.session.BotUserSession.AgentLocationTagSet = true;
+
+}
+
+
+
+if (!context.session.BotUserSession.PayerNameConfirmationTagSet &amp;&amp; context.session.BotUserSession.EPC == &quot;true&quot;) {
+
+  tags.addSessionLevelTag(&quot;PayerNameConfirmation&quot;, context.entities.ConfirmUserInput);
+
+  context.session.BotUserSession.PayerNameConfirmationTagSet = true;
+
+}
+
+
+
+if (!context.session.BotUserSession.EntityValueTagSet &amp;&amp; context.session.BotUserSession.EPC == &quot;true&quot;) {
+
+  tags.addSessionLevelTag(&quot;EntityValue&quot;, context.entities.PayerName);
+
+  context.session.BotUserSession.EntityValueTagSet = true;
+
+}
+
+if (env.VerboseLog) koreDebugger.log(&quot;APIURL: &quot; +context.session.BotUserSession.APIURL );
+
+
+
+</code></pre>
+                    </div>
+
+                    <div class="variable-list">
+                        <h4>Variables Declared</h4>
+                        <ul>
+                            <li>baseURL</li>
+                            <li>contactID</li>
+                            <li>P1</li>
+                            <li>P2</li>
+                            <li>P3</li>
+                            <li>P4</li>
+                            <li>P5</li>
+                            <li>P6</li>
+                            <li>P7</li>
+                            <li>P8</li>
+                            <li>url</li>
+                            <li>PIDTransferred</li>
+                            <li>TINTransferred</li>
+                            <li>tagValue</li>
+                            <li>locationTag</li>
+                        </ul>
+                    </div>
+
+                    <div class="variable-list context-reads">
+                        <h4>Context Variables Read</h4>
+                        <ul>
+                            <li>context.MemberInfoValidation</li>
+                            <li>context.Payments_Details</li>
+                            <li>context.currentTags.tags.includes</li>
+                            <li>context.entities.ConfirmUserInput</li>
+                            <li>context.entities.DateOfBirth</li>
+                            <li>context.entities.Language</li>
+                            <li>context.entities.MemberID</li>
+                            <li>context.entities.PayerName</li>
+                            <li>context.entities.PaymentID</li>
+                            <li>context.entities.TaxID</li>
+                            <li>context.entities.ZIPCode</li>
+                            <li>context.session.BotUserSession.APIURL</li>
+                            <li>context.session.BotUserSession.AgentLocation</li>
+                            <li>context.session.BotUserSession.AgentLocationTagSet</li>
+                            <li>context.session.BotUserSession.AuthTagSet</li>
+                            <li>context.session.BotUserSession.ConfirmInput</li>
+                            <li>context.session.BotUserSession.ContactID</li>
+                            <li>context.session.BotUserSession.EPC</li>
+                            <li>context.session.BotUserSession.EntityValueTagSet</li>
+                            <li>context.session.BotUserSession.FaxService</li>
+                            <li>context.session.BotUserSession.IEDNIS</li>
+                            <li>context.session.BotUserSession.InitialIntent</li>
+                            <li>context.session.BotUserSession.MemberID</li>
+                            <li>context.session.BotUserSession.NearMatch</li>
+                            <li>context.session.BotUserSession.NonEPC</li>
+                            <li>context.session.BotUserSession.P1</li>
+                            <li>context.session.BotUserSession.P2</li>
+                            <li>context.session.BotUserSession.P2.includes</li>
+                            <li>context.session.BotUserSession.P3</li>
+                            <li>context.session.BotUserSession.P4</li>
+                            <li>context.session.BotUserSession.P5</li>
+                            <li>context.session.BotUserSession.P6</li>
+                            <li>context.session.BotUserSession.P7</li>
+                            <li>context.session.BotUserSession.P8</li>
+                            <li>context.session.BotUserSession.PayerEntity</li>
+                            <li>context.session.BotUserSession.PayerNameConfirmationTagSet</li>
+                            <li>context.session.BotUserSession.retryAPIAttempt</li>
+                        </ul>
+                    </div>
+
+                    <div class="variable-list context-writes">
+                        <h4>Context Variables Written</h4>
+                        <ul>
+                            <li>context.session.BotUserSession.APIURL</li>
+                            <li>context.session.BotUserSession.AgentLocation</li>
+                            <li>context.session.BotUserSession.AgentLocationTagSet</li>
+                            <li>context.session.BotUserSession.AuthTagSet</li>
+                            <li>context.session.BotUserSession.ConfirmInput</li>
+                            <li>context.session.BotUserSession.EPC</li>
+                            <li>context.session.BotUserSession.EntityValueTagSet</li>
+                            <li>context.session.BotUserSession.FaxService</li>
+                            <li>context.session.BotUserSession.IEDNIS</li>
+                            <li>context.session.BotUserSession.InitialIntent</li>
+                            <li>context.session.BotUserSession.NonEPC</li>
+                            <li>context.session.BotUserSession.P1</li>
+                            <li>context.session.BotUserSession.P2</li>
+                            <li>context.session.BotUserSession.P3</li>
+                            <li>context.session.BotUserSession.P4</li>
+                            <li>context.session.BotUserSession.P5</li>
+                            <li>context.session.BotUserSession.P6</li>
+                            <li>context.session.BotUserSession.P7</li>
+                            <li>context.session.BotUserSession.P8</li>
+                            <li>context.session.BotUserSession.PayerEntity</li>
+                            <li>context.session.BotUserSession.PayerNameConfirmationTagSet</li>
+                            <li>context.session.BotUserSession.retryAPIAttempt</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">script</span>
+                        <h3>SaveAccessToken</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-5ee7776b-b0d3-5cb6-981b-28a6c2dba266</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-d0818e80-6324-593a-ae2e-3452c3dbe74e</div>
+                        </div>
+                    </div>
+
+                    <div class="explanation">
+                        
+<h4>Code Analysis:</h4>
+<p>This script performs the following operations:</p>
+<ul>
+</ul>
+                    </div>
+
+                    <div class="code-section">
+                        <h4><span class="code-icon">📜</span> JavaScript Code</h4>
+                        <pre><code>context.session.BotContext.SignalAPIToken = context.SignalAPIToken;</code></pre>
+                    </div>
+
+                    <div class="variable-list context-reads">
+                        <h4>Context Variables Read</h4>
+                        <ul>
+                            <li>context.SignalAPIToken</li>
+                            <li>context.session.BotContext.SignalAPIToken</li>
+                        </ul>
+                    </div>
+
+                    <div class="variable-list context-writes">
+                        <h4>Context Variables Written</h4>
+                        <ul>
+                            <li>context.session.BotContext.SignalAPIToken</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">script</span>
+                        <h3>RetryIncrement</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-ed0fcf89-e563-5c2b-b52c-45e1b722ba1b</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-83b7b827-769d-5f6e-ae66-12be9f988864</div>
+                        </div>
+                    </div>
+
+                    <div class="explanation">
+                        
+<h4>Purpose:</h4>
+<p>This script manages retry logic by clearing the collected entity so the user can be prompted again. It's a cleanup operation that resets the conversation state for another attempt.</p>
+
+<h4>What Happens:</h4>
+<ol>
+<li><strong>Entity Deletion:</strong> Uses <code>delete context.entities.[EntityName]</code> to remove the invalid or rejected value from context.</li>
+
+<li><strong>State Reset:</strong> Clears any validation flags or temporary variables associated with the entity.</li>
+
+<li><strong>Routing:</strong> Sets the routing variable to return to the entity collection node.</li>
+</ol>
+
+<h4>Why This Matters:</h4>
+<p>If we don't delete the entity, the dialog won't re-prompt the user - it will assume the value is still available. This deletion forces the entity node to trigger again, allowing the user to provide a corrected value. It's essential for the retry flow to work properly.</p>
+
+                    </div>
+
+                    <div class="code-section">
+                        <h4><span class="code-icon">📜</span> JavaScript Code</h4>
+                        <pre><code>context.session.BotUserSession.retryAPIAttempt++;</code></pre>
+                    </div>
+
+                    <div class="variable-list context-reads">
+                        <h4>Context Variables Read</h4>
+                        <ul>
+                            <li>context.session.BotUserSession.retryAPIAttempt</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">script</span>
+                        <h3>ClearingPayment_ID</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-722b1e2f-898e-529e-9be0-5f170258b86e</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-9ebdd0cf-bdb3-5bc6-b216-e28703723529</div>
+                        </div>
+                    </div>
+
+                    <div class="explanation">
+                        
+<h4>Purpose:</h4>
+<p>This initialization script sets up all necessary session variables at the start of the Payment Details dialog. It establishes a clean state for the conversation.</p>
+
+<h4>What Happens:</h4>
+<ol>
+<li><strong>Counter Initialization:</strong>
+   <ul>
+   <li><code>Taxcounter = 0</code>: Tracks Tax ID collection attempts</li>
+   <li><code>Paymentcounter = 0</code>: Tracks Payment ID collection attempts</li>
+   <li>These prevent infinite retry loops by limiting to 3 attempts</li>
+   </ul>
+</li>
+
+<li><strong>Flag Setup:</strong> Initializes boolean flags and routing variables to their default states:
+   <ul>
+   <li><code>TaxID</code>, <code>PaymentID</code>: Validation status flags</li>
+   <li><code>Routing</code>: Controls conversation flow direction</li>
+   <li><code>AgentRequest</code>: Tracks if user explicitly requested agent</li>
+   </ul>
+</li>
+
+<li><strong>State Management:</strong> May clear any leftover variables from previous dialog executions.</li>
+</ol>
+
+<h4>Why This Matters:</h4>
+<p>Without proper initialization, variables from previous conversations could interfere with the current session. Starting with counters at 0 ensures consistent behavior. This also makes the dialog state predictable and testable.</p>
+
+                    </div>
+
+                    <div class="code-section">
+                        <h4><span class="code-icon">📜</span> JavaScript Code</h4>
+                        <pre><code>delete context.entities.PaymentID;
+delete context.entities.ClaimID;
+context.session.BotUserSession.InteractionID = context.Payments_Details.response.body.interactionId;
+context.session.BotUserSession.Taxcounter = 1;
+context.session.BotUserSession.Paymentcounter = 0;</code></pre>
+                    </div>
+
+                    <div class="variable-list context-reads">
+                        <h4>Context Variables Read</h4>
+                        <ul>
+                            <li>context.Payments_Details.response.body.interactionId</li>
+                            <li>context.entities.ClaimID</li>
+                            <li>context.entities.PaymentID</li>
+                            <li>context.session.BotUserSession.InteractionID</li>
+                            <li>context.session.BotUserSession.Paymentcounter</li>
+                            <li>context.session.BotUserSession.Taxcounter</li>
+                        </ul>
+                    </div>
+
+                    <div class="variable-list context-writes">
+                        <h4>Context Variables Written</h4>
+                        <ul>
+                            <li>context.session.BotUserSession.InteractionID</li>
+                            <li>context.session.BotUserSession.Paymentcounter</li>
+                            <li>context.session.BotUserSession.Taxcounter</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">script</span>
+                        <h3>PaymentsInit</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-e17b8c19-eced-5319-8113-b3e12c69f385</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-cba2e4c8-749f-58bb-8924-b1850eb46c50</div>
+                        </div>
+                    </div>
+
+                    <div class="explanation">
+                        
+<h4>Purpose:</h4>
+<p>This script evaluates the payment status returned from the API and determines the appropriate response path based on the status value.</p>
+
+<h4>What Happens:</h4>
+<ol>
+<li><strong>Status Evaluation:</strong> Reads <code>context.Payments_Details.response.body.statusName</code> from the API response.</li>
+
+<li><strong>Routing Logic:</strong> Determines next steps based on payment status:
+   <ul>
+   <li><strong>"Processing" or "Out For Payment":</strong> Routes to "hold" message, telling user payment is in progress</li>
+   <li><strong>"Paid":</strong> Routes to agent transfer (user may need proof or additional details)</li>
+   <li><strong>"Rejected", "Cancelled", "Void":</strong> Routes to agent transfer (requires human intervention)</li>
+   <li><strong>"Returned", "Reissued":</strong> Routes to agent transfer (complex scenarios)</li>
+   <li><strong>Other statuses:</strong> Default routing based on business rules</li>
+   </ul>
+</li>
+
+<li><strong>Context Storage:</strong> May store the status in session variables for later reference or reporting.</li>
+</ol>
+
+<h4>Why This Matters:</h4>
+<p>Payment status determines user expectations and required actions. "Processing" payments need reassurance, while "Rejected" payments need immediate attention. Routing to the right path (self-service vs agent) based on status improves efficiency and user satisfaction. This logic also prevents the bot from handling complex scenarios it can't resolve, ensuring quality customer service.</p>
+
+                    </div>
+
+                    <div class="code-section">
+                        <h4><span class="code-icon">📜</span> JavaScript Code</h4>
+                        <pre><code>context.session.BotUserSession.NonEPC = &quot;true&quot;;
+context.session.BotUserSession.Taxcounter = 0;
+context.session.BotUserSession.Paymentcounter = 0;
+context.session.BotUserSession.UseClaimID = false;
+tags.addSessionLevelTag(&quot;CallFlow&quot;, &quot;PaymentStatus&quot;);
+if (env.VerboseLog) koreDebugger.log(&quot;PaymentsInit:VerboseLog started&quot;);</code></pre>
+                    </div>
+
+                    <div class="variable-list context-reads">
+                        <h4>Context Variables Read</h4>
+                        <ul>
+                            <li>context.session.BotUserSession.NonEPC</li>
+                            <li>context.session.BotUserSession.Paymentcounter</li>
+                            <li>context.session.BotUserSession.Taxcounter</li>
+                            <li>context.session.BotUserSession.UseClaimID</li>
+                        </ul>
+                    </div>
+
+                    <div class="variable-list context-writes">
+                        <h4>Context Variables Written</h4>
+                        <ul>
+                            <li>context.session.BotUserSession.NonEPC</li>
+                            <li>context.session.BotUserSession.Paymentcounter</li>
+                            <li>context.session.BotUserSession.Taxcounter</li>
+                            <li>context.session.BotUserSession.UseClaimID</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">script</span>
+                        <h3>PaymentIDValidationScript</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-f2bbbe79-d7cc-526a-8ab3-02cfd6e0f587</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-6d44cb97-054e-55ff-9544-c3b12455782b</div>
+                        </div>
+                    </div>
+
+                    <div class="explanation">
+                        
+<h4>Code Analysis:</h4>
+<p>This script performs the following operations:</p>
+<ul>
+<li><strong>Session Management:</strong> Reads or modifies session context variables to maintain conversation state.</li><li><strong>Entity Processing:</strong> Works with collected user inputs (entities) for validation or transformation.</li><li><strong>Counter Management:</strong> Increments retry counters to track user attempts and enforce limits.</li><li><strong>Conditional Logic:</strong> Makes routing decisions based on validation results, status checks, or counter values.</li><li><strong>Case Normalization:</strong> Converts strings to consistent case for reliable comparison.</li><li><strong>String Manipulation:</strong> Transforms or cleans user input for standardization.</li><li><strong>Entity Cleanup:</strong> Removes invalid entities to enable re-prompting.</li><li><strong>Debug Logging:</strong> Outputs diagnostic information for troubleshooting.</li><li><strong>Analytics Tagging:</strong> Adds session tags for reporting and analytics tracking.</li></ul>
+                    </div>
+
+                    <div class="code-section">
+                        <h4><span class="code-icon">📜</span> JavaScript Code</h4>
+                        <pre><code>
+function convertToDigit(input) {
+    if (typeof input !== &quot;string&quot;) {
+        input = String(input); // Convert to string if it&#39;s not already
+    }
+
+    const wordToDigit = {
+        &#39;zero&#39;: &#39;0&#39;, &#39;one&#39;: &#39;1&#39;, &#39;two&#39;: &#39;2&#39;, &#39;three&#39;: &#39;3&#39;, &#39;four&#39;: &#39;4&#39;,
+        &#39;five&#39;: &#39;5&#39;, &#39;six&#39;: &#39;6&#39;, &#39;seven&#39;: &#39;7&#39;, &#39;eight&#39;: &#39;8&#39;, &#39;nine&#39;: &#39;9&#39;,
+        &#39;to&#39;: &#39;2&#39;, &#39;too&#39;: &#39;2&#39;
+    };
+
+    // Replace word representations of numbers with their digit equivalents
+    input = input.toLowerCase().replace(/(zero|one|two|three|four|five|six|seven|eight|nine|to|too)/g, match =&gt; wordToDigit[match]);
+
+    // Remove non-digit characters
+    let result = input.replace(/[^0-9]/g, &#39;&#39;);
+
+    return (result.length &gt;= 8 &amp;&amp; result.length &lt;= 10) ? result : &#39;Invalid Input&#39;;
+}
+
+
+context.entities.PaymentID = convertToDigit(context.entities.PaymentID);
+context.session.BotUserSession.Paymentcounter++;
+if(context.entities.PaymentID == &quot;Invalid Input&quot;){
+    context.session.BotUserSession.PaymentID = &quot;false&quot;;
+    delete context.entities.PaymentID;
+    if (context.session.BotUserSession.Paymentcounter&gt;2)
+        context.session.BotUserSession.Routing = &quot;paymentid&quot;;
+    else
+        context.session.BotUserSession.Routing = &quot;agenttransfer&quot;;
+               tags.addSessionLevelTag(&quot;PaymentDetailsCallFlow_PaymentID_invalid&quot;, &quot;3Invalid_PaymentID_input&quot;);
+
+//    koreDebugger.log(&quot;Payment invalid input path&quot;);
+}
+else{
+    context.session.BotUserSession.PaymentID = &quot;true&quot;;
+    context.session.BotUserSession.Routing = &quot;paymentlookup&quot;;
+}   
+
+//koreDebugger.log(&quot;TC:&quot;+context.session.BotUserSession.CurrentEntityPath);
+//koreDebugger.log(&quot;TC:&quot;+context.session.BotUserSession.Taxcounter);
+//koreDebugger.log(&quot;PC:&quot;+context.session.BotUserSession.Paymentcounter);
+//koreDebugger.log(&quot;TaxID:&quot;+context.session.BotUserSession.TaxID);
+//koreDebugger.log(&quot;TEntity:&quot;+context.session.BotUserSession.TaxEntity);
+//koreDebugger.log(&quot;PaymentId:&quot;+context.session.BotUserSession.PaymentID);
+
+
+</code></pre>
+                    </div>
+
+                    <div class="variable-list">
+                        <h4>Variables Declared</h4>
+                        <ul>
+                            <li>wordToDigit</li>
+                            <li>result</li>
+                        </ul>
+                    </div>
+
+                    <div class="variable-list context-reads">
+                        <h4>Context Variables Read</h4>
+                        <ul>
+                            <li>context.entities.PaymentID</li>
+                            <li>context.session.BotUserSession.CurrentEntityPath</li>
+                            <li>context.session.BotUserSession.PaymentID</li>
+                            <li>context.session.BotUserSession.Paymentcounter</li>
+                            <li>context.session.BotUserSession.Routing</li>
+                            <li>context.session.BotUserSession.TaxEntity</li>
+                            <li>context.session.BotUserSession.TaxID</li>
+                            <li>context.session.BotUserSession.Taxcounter</li>
+                        </ul>
+                    </div>
+
+                    <div class="variable-list context-writes">
+                        <h4>Context Variables Written</h4>
+                        <ul>
+                            <li>context.entities.PaymentID</li>
+                            <li>context.session.BotUserSession.PaymentID</li>
+                            <li>context.session.BotUserSession.Routing</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">script</span>
+                        <h3>RetryLogicforTaxandPayment</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-4e75961c-fe6f-5f72-a1a4-c09172d28f83</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-a0cd44a8-c3ab-512c-add6-158282ae8516</div>
+                        </div>
+                    </div>
+
+                    <div class="explanation">
+                        
+<h4>Purpose:</h4>
+<p>This script manages retry logic by clearing the collected entity so the user can be prompted again. It's a cleanup operation that resets the conversation state for another attempt.</p>
+
+<h4>What Happens:</h4>
+<ol>
+<li><strong>Entity Deletion:</strong> Uses <code>delete context.entities.[EntityName]</code> to remove the invalid or rejected value from context.</li>
+
+<li><strong>State Reset:</strong> Clears any validation flags or temporary variables associated with the entity.</li>
+
+<li><strong>Routing:</strong> Sets the routing variable to return to the entity collection node.</li>
+</ol>
+
+<h4>Why This Matters:</h4>
+<p>If we don't delete the entity, the dialog won't re-prompt the user - it will assume the value is still available. This deletion forces the entity node to trigger again, allowing the user to provide a corrected value. It's essential for the retry flow to work properly.</p>
+
+                    </div>
+
+                    <div class="code-section">
+                        <h4><span class="code-icon">📜</span> JavaScript Code</h4>
+                        <pre><code>
+//koreDebugger.log(&quot;TaxEntity:&quot;+context.session.BotUserSession.PaymentEntity);
+if(context.session.BotUserSession.TaxEntity == &quot;True&quot;){
+    delete context.entities.TaxID;
+    context.session.BotUserSession.TaxEntity = &quot;False&quot;;
+    context.session.BotUserSession.EntityNode = &quot;Tax&quot;;
+    context.session.BotUserSession.RetryCount++;
+}
+if(context.session.BotUserSession.PaymentEntity == &quot;True&quot;){
+    delete context.entities.PaymentID;
+    context.session.BotUserSession.EntityNode = &quot;Payment&quot;;
+    context.session.BotUserSession.PaymentEntity = &quot;False&quot;;
+    context.session.BotUserSession.RetryCount++;
+}
+//koreDebugger.log(&quot;entity:&quot;+context.session.BotUserSession.EntityNode);
+//koreDebugger.log(&quot;PC:&quot;+context.session.BotUserSession.Paymentcounter);
+//koreDebugger.log(&quot;TC:&quot;+context.session.BotUserSession.Taxcounter);
+//koreDebugger.log(&quot;RC:&quot;+context.session.BotUserSession.RetryCount);</code></pre>
+                    </div>
+
+                    <div class="variable-list context-reads">
+                        <h4>Context Variables Read</h4>
+                        <ul>
+                            <li>context.entities.PaymentID</li>
+                            <li>context.entities.TaxID</li>
+                            <li>context.session.BotUserSession.EntityNode</li>
+                            <li>context.session.BotUserSession.PaymentEntity</li>
+                            <li>context.session.BotUserSession.Paymentcounter</li>
+                            <li>context.session.BotUserSession.RetryCount</li>
+                            <li>context.session.BotUserSession.TaxEntity</li>
+                            <li>context.session.BotUserSession.Taxcounter</li>
+                        </ul>
+                    </div>
+
+                    <div class="variable-list context-writes">
+                        <h4>Context Variables Written</h4>
+                        <ul>
+                            <li>context.session.BotUserSession.EntityNode</li>
+                            <li>context.session.BotUserSession.PaymentEntity</li>
+                            <li>context.session.BotUserSession.TaxEntity</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">script</span>
+                        <h3>PaymentDetailsInit</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-ef2bf679-b9fd-5b1e-a262-018c8d6a0913</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-eb69e6f6-40db-5d84-9bb4-425c69077745</div>
+                        </div>
+                    </div>
+
+                    <div class="explanation">
+                        
+<h4>Purpose:</h4>
+<p>This script handles API failure scenarios by implementing retry logic. It attempts to recover from transient failures without immediately escalating to an agent.</p>
+
+<h4>What Happens:</h4>
+<ol>
+<li><strong>Retry Counter Check:</strong> Examines <code>RetryPaymentAPI</code> counter to determine if retry is allowed (max 2 attempts).</li>
+
+<li><strong>Error Analysis:</strong> Checks the API response status code:
+   <ul>
+   <li><strong>401 (Unauthorized):</strong> Token expired, routes to token refresh node</li>
+   <li><strong>500 (Server Error):</strong> Transient failure, eligible for retry</li>
+   <li><strong>404 (Not Found):</strong> Invalid Tax ID/Payment ID, no retry needed</li>
+   <li><strong>Timeout:</strong> Network issue, eligible for retry</li>
+   </ul>
+</li>
+
+<li><strong>Retry Decision:</strong>
+   <ul>
+   <li><strong>If retry count < 2:</strong> Increment counter and route back to API call</li>
+   <li><strong>If retry count >= 2:</strong> Route to agent transfer with error context</li>
+   </ul>
+</li>
+
+<li><strong>Context Preservation:</strong> Maintains all collected entities (Tax ID, Payment ID) so retry doesn't require re-collection.</li>
+</ol>
+
+<h4>Why This Matters:</h4>
+<p>APIs can fail temporarily due to network issues, service restarts, or high load. Automatic retry improves success rates without bothering the user. However, limiting to 2 retries prevents long waits. The 401 token refresh handling is critical - expired tokens are expected in long conversations, and auto-refresh provides seamless user experience.</p>
+
+                    </div>
+
+                    <div class="code-section">
+                        <h4><span class="code-icon">📜</span> JavaScript Code</h4>
+                        <pre><code>tags.addSessionLevelTag(&quot;PaymentID_Confirmed&quot;, &quot;Yes&quot;);
+const wordToNumber = {
+  &quot;zero&quot;: 0,
+  &quot;one&quot;: 1,
+  &quot;two&quot;: 2,
+  &quot;three&quot;: 3,
+  &quot;four&quot;: 4,
+  &quot;five&quot;: 5,
+  &quot;six&quot;: 6,
+  &quot;seven&quot;: 7,
+  &quot;eight&quot;: 8,
+  &quot;nine&quot;: 9
+};
+
+// Remove ALL dashes only if the string contains 2 or more dashes total
+function stripDashesIfTwoOrMore(s) {
+  const dashCount = (s.match(/-/g) || []).length;
+  return dashCount &gt;= 2 ? s.replace(/-/g, &#39;&#39;) : s;
+}
+
+let input = context.session.BotUserSession.TaxID;
+context.entities.TaxID = input.split(&quot;, &quot;).map(word =&gt; wordToNumber[word.replace(/[-]/g, &quot;&quot;)]).join(&quot;&quot;);
+
+let input1 = context.session.BotUserSession.PaymentID;
+if (input1) 
+context.entities.PaymentID = input1.split(&quot;, &quot;).map(word =&gt; wordToNumber[word.replace(/[-]/g, &quot;&quot;)]).join(&quot;&quot;);
+
+
+context.session.BotUserSession.RetryPaymentAPI = 0;
+
+const stripDashesAndSpaces = s =&gt; s.replace(/[-\s]/g, &#39;&#39;);
+const removePhoneDashes = (phone) =&gt; 
+    /^\d{3}-\d{3}-\d{4}$/.test(phone) ? phone.replace(/-/g, &#39;&#39;) : phone;
+    
+if (context.session.BotUserSession.UseClaimID) {
+  //  koreDebugger.log(&quot;PDI ClaimId1:&quot;+context.entities.ClaimID);
+    context.entities.ClaimID= context.entities.ClaimID.replace(/\.$/, &quot;&quot;);
+//        context.entities.ClaimID = stripDashesIfTwoOrMore(context.entities.ClaimID);
+        context.entities.ClaimID = stripDashesAndSpaces(context.entities.ClaimID);
+//    context.entities.ClaimID = removePhoneDashes(context.entities.ClaimID);
+    
+    //koreDebugger.log(&quot;PDI Routing: lookupbyclaim&quot;);
+ //   koreDebugger.log(&quot;PDI ClaimId2:&quot;+context.entities.ClaimID);
+        context.session.BotUserSession.Routing =&quot;lookupbyclaim&quot;;
+          let requestData = {
+        &quot;tin&quot;: `${context.entities.TaxID}`,
+        &quot;claimId&quot;: `${context.entities.ClaimID}`,
+        &quot;SessionId&quot;: `${context.session.BotUserSession.sessionid}`,
+        &quot;SystemId&quot;: &quot;1&quot;
+    };
+    context.session.BotUserSession.RequestBody = JSON.stringify(requestData);
+    
+}
+else
+{
+      //  koreDebugger.log(&quot;PDI Routing: lookupbypayment&quot;);
+
+context.session.BotUserSession.Routing =&quot;lookupbypayment&quot;
+// Check if interactionId exists
+if (context.session.BotUserSession.interactionId) {
+    // Construct the object
+      let requestData = {
+        &quot;Tin&quot;: `${context.entities.TaxID}`,
+        &quot;PaymentId&quot;: `${context.entities.PaymentID}`,
+        &quot;Notes&quot;: `Kore.ai payment lookup: PaymentId ${context.entities.PaymentID} and TIN ${context.entities.TaxID}`,
+        &quot;SessionId&quot;: `${context.session.BotUserSession.sessionid}`,
+        &quot;SystemId&quot;: &quot;1&quot;,
+        &quot;interactionId&quot;: `${context.session.BotUserSession.interactionId}`
+    };
+    context.session.BotUserSession.RequestBody = JSON.stringify(requestData);
+
+} else {
+     let Request = {
+         &quot;Tin&quot;: `${context.entities.TaxID}`,
+        &quot;PaymentId&quot;: `${context.entities.PaymentID}`,
+        &quot;Notes&quot;: `Kore.ai payment lookup: PaymentId ${context.entities.PaymentID} and TIN ${context.entities.TaxID}`,
+        &quot;SessionId&quot;: `${context.session.BotUserSession.sessionid}`,
+        &quot;SystemId&quot;: &quot;1&quot;
+    };
+    context.session.BotUserSession.RequestBody = JSON.stringify(Request);
+}
+}
+
+//koreDebugger.log(&quot;PDI RequestBody:&quot;+context.session.BotUserSession.RequestBody);
+</code></pre>
+                    </div>
+
+                    <div class="variable-list">
+                        <h4>Variables Declared</h4>
+                        <ul>
+                            <li>wordToNumber</li>
+                            <li>dashCount</li>
+                            <li>input</li>
+                            <li>input1</li>
+                            <li>stripDashesAndSpaces</li>
+                            <li>removePhoneDashes</li>
+                            <li>requestData</li>
+                            <li>requestData</li>
+                            <li>Request</li>
+                        </ul>
+                    </div>
+
+                    <div class="variable-list context-reads">
+                        <h4>Context Variables Read</h4>
+                        <ul>
+                            <li>context.entities.ClaimID</li>
+                            <li>context.entities.ClaimID.replace</li>
+                            <li>context.entities.PaymentID</li>
+                            <li>context.entities.TaxID</li>
+                            <li>context.session.BotUserSession.PaymentID</li>
+                            <li>context.session.BotUserSession.RequestBody</li>
+                            <li>context.session.BotUserSession.RetryPaymentAPI</li>
+                            <li>context.session.BotUserSession.Routing</li>
+                            <li>context.session.BotUserSession.TaxID</li>
+                            <li>context.session.BotUserSession.UseClaimID</li>
+                            <li>context.session.BotUserSession.interactionId</li>
+                            <li>context.session.BotUserSession.sessionid</li>
+                        </ul>
+                    </div>
+
+                    <div class="variable-list context-writes">
+                        <h4>Context Variables Written</h4>
+                        <ul>
+                            <li>context.entities.ClaimID</li>
+                            <li>context.entities.PaymentID</li>
+                            <li>context.entities.TaxID</li>
+                            <li>context.session.BotUserSession.RequestBody</li>
+                            <li>context.session.BotUserSession.RetryPaymentAPI</li>
+                            <li>context.session.BotUserSession.Routing</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">script</span>
+                        <h3>SavePaymentToken</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-802b800b-4f3a-5649-bf98-6b7615d5efc1</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-c6b70f7a-9e57-5b96-8808-441b34e59073</div>
+                        </div>
+                    </div>
+
+                    <div class="explanation">
+                        
+<h4>Code Analysis:</h4>
+<p>This script performs the following operations:</p>
+<ul>
+</ul>
+                    </div>
+
+                    <div class="code-section">
+                        <h4><span class="code-icon">📜</span> JavaScript Code</h4>
+                        <pre><code>context.session.BotContext.PaymentsToken = context.PaymentToken;</code></pre>
+                    </div>
+
+                    <div class="variable-list context-reads">
+                        <h4>Context Variables Read</h4>
+                        <ul>
+                            <li>context.PaymentToken</li>
+                            <li>context.session.BotContext.PaymentsToken</li>
+                        </ul>
+                    </div>
+
+                    <div class="variable-list context-writes">
+                        <h4>Context Variables Written</h4>
+                        <ul>
+                            <li>context.session.BotContext.PaymentsToken</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">script</span>
+                        <h3>RetryPaymentAPI</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-cc91831d-b93b-5693-8ecc-1b928d55c8a2</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-b189a427-5467-55af-917f-1ea5f8b7dfd2</div>
+                        </div>
+                    </div>
+
+                    <div class="explanation">
+                        
+<h4>Purpose:</h4>
+<p>This script manages retry logic by clearing the collected entity so the user can be prompted again. It's a cleanup operation that resets the conversation state for another attempt.</p>
+
+<h4>What Happens:</h4>
+<ol>
+<li><strong>Entity Deletion:</strong> Uses <code>delete context.entities.[EntityName]</code> to remove the invalid or rejected value from context.</li>
+
+<li><strong>State Reset:</strong> Clears any validation flags or temporary variables associated with the entity.</li>
+
+<li><strong>Routing:</strong> Sets the routing variable to return to the entity collection node.</li>
+</ol>
+
+<h4>Why This Matters:</h4>
+<p>If we don't delete the entity, the dialog won't re-prompt the user - it will assume the value is still available. This deletion forces the entity node to trigger again, allowing the user to provide a corrected value. It's essential for the retry flow to work properly.</p>
+
+                    </div>
+
+                    <div class="code-section">
+                        <h4><span class="code-icon">📜</span> JavaScript Code</h4>
+                        <pre><code>context.session.BotUserSession.RetryPaymentAPI++;</code></pre>
+                    </div>
+
+                    <div class="variable-list context-reads">
+                        <h4>Context Variables Read</h4>
+                        <ul>
+                            <li>context.session.BotUserSession.RetryPaymentAPI</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">script</span>
+                        <h3>TaxID_Entity_faild</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-scr-49a3616c-f2fc-4b35-809b-da69396d120e</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-e8f4340b-9562-53a1-b17b-c675e241bb0e</div>
+                        </div>
+                    </div>
+<div class="no-code">No script code found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">script</span>
+                        <h3>PaymentID_Entity_failed</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-scr-fdf78bdc-4bd8-4553-b1a1-07e669d72bc7</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-e77c910b-a959-5434-bec1-a5b24f9d105a</div>
+                        </div>
+                    </div>
+<div class="no-code">No script code found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">script</span>
+                        <h3>AgentTransfer_AfterIdCollection</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-scr-2ebfee15-917c-48a4-9716-00934555368e</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-a8311489-fe74-5ab5-ba7d-47901d3869ec</div>
+                        </div>
+                    </div>
+<div class="no-code">No script code found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">script</span>
+                        <h3>PaymentsDetailsAPI_failed</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-scr-cf79b0d2-a336-4314-89f6-f196e6ad0b10</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-b0daf758-2a1d-50cf-8bab-a87f9e678c37</div>
+                        </div>
+                    </div>
+<div class="no-code">No script code found</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="section" id="logic-nodes">
+            <div class="section-header">
+                <h2>🔀 Logic Nodes <span style="opacity: 0.8;">(13 nodes)</span></h2>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">logic</span>
+                        <h3>TaxIDValidation_logic</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">logic_nd-b8e8aebe-5555-579d-940e-9a5b49d290c5</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-22954a85-7727-5953-b519-a6357b53133c</div>
+                        </div>
+                    </div>
+<div class="no-code">No conditional logic found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">logic</span>
+                        <h3>ClaimIDValidation_logic</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">logic_nd-bc7f481f-81b3-526f-89f9-eef0c51097c9</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-c67175e6-655a-5b77-9767-92069a7410cd</div>
+                        </div>
+                    </div>
+<div class="no-code">No conditional logic found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">logic</span>
+                        <h3>RetryClaimID_logic</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">logic_nd-00280bbd-07e6-5392-be16-c878e429be50</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-388b4008-22a3-5eae-9769-b70d505e5737</div>
+                        </div>
+                    </div>
+<div class="no-code">No conditional logic found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">logic</span>
+                        <h3>EntityValidation_logic</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">logic_nd-8d430a54-5cb2-5023-b991-4dafa2bdf921</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-a7e88561-915f-5eab-9041-97177581dff6</div>
+                        </div>
+                    </div>
+<div class="no-code">No conditional logic found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">logic</span>
+                        <h3>ClearingTaxID_logic</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">logic_nd-bc9a8184-934e-5dfa-b59b-ddfaefe73bba</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-709585a7-897b-5399-b778-af8d0a8445fb</div>
+                        </div>
+                    </div>
+<div class="no-code">No conditional logic found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">logic</span>
+                        <h3>RoutingAfterIDs_logic</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">logic_nd-56402468-1d34-58f9-970c-04d01021019d</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-01234fd5-f865-5711-8d9b-2caabc381cc4</div>
+                        </div>
+                    </div>
+<div class="no-code">No conditional logic found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">logic</span>
+                        <h3>AgentRoutingAPIAction_logic</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">logic_nd-b6d155a3-4fb8-50e9-bd92-eb5eba10fa5d</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-d7a51b80-3ae5-58ec-b932-a167814e74e4</div>
+                        </div>
+                    </div>
+<div class="no-code">No conditional logic found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">logic</span>
+                        <h3>ClearingPaymentID_logic</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">logic_nd-7c353e03-dc06-5cba-ad6b-5dfedea85442</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-72fdd0ab-d1fb-5f66-b3f4-88f889941b61</div>
+                        </div>
+                    </div>
+<div class="no-code">No conditional logic found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">logic</span>
+                        <h3>PaymentsInitialize_logic</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">logic_nd-367f37f9-f479-57fb-8c17-eb0eec579ec0</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-74f51beb-6fc3-5d45-8470-e3aea789a01d</div>
+                        </div>
+                    </div>
+<div class="no-code">No conditional logic found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">logic</span>
+                        <h3>PaymentIDValidation_logic</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">logic_nd-1d3124a7-59c7-5540-90d6-28e4a865bfd1</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-ba86ff88-f284-57b7-a3ff-30cb948d0b6a</div>
+                        </div>
+                    </div>
+<div class="no-code">No conditional logic found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">logic</span>
+                        <h3>RetryLogic_logic</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">logic_nd-70b0c01d-84e6-5a9f-a231-68425b6d323f</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-85e96d23-e377-5afa-92a8-b05cc3177ec8</div>
+                        </div>
+                    </div>
+<div class="no-code">No conditional logic found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">logic</span>
+                        <h3>RoutingAfterTaxId_logic</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">logic_nd-cd1d4030-a574-565c-bae4-3a160493db7f</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-073e92df-1039-56d0-ada6-027df763dc1b</div>
+                        </div>
+                    </div>
+<div class="no-code">No conditional logic found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">logic</span>
+                        <h3>PaymentDetailsRetrival_logic</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">logic_nd-93277037-c7d8-5a78-8df9-740a1be6ec18</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-64dd1273-51ed-546e-af19-dbf997984a88</div>
+                        </div>
+                    </div>
+<div class="no-code">No conditional logic found</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="section" id="entity-nodes">
+            <div class="section-header">
+                <h2>📝 Entity Nodes <span style="opacity: 0.8;">(3 nodes)</span></h2>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">entity</span>
+                        <h3>TaxID</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-ent-35179fca-51a2-4ac4-bdb2-562a53b6833e</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-fa7715b4-8f4a-57ba-9b25-e57fa62bdc1e</div>
+                        </div>
+                    </div>
+<p><strong>Entity Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">entity</span>
+                        <h3>PaymentID</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-ent-618c5da5-0511-4343-85c1-b5fdf0cbb0b9</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-49d139b6-2ab6-550d-ba41-c8923da0f21e</div>
+                        </div>
+                    </div>
+<p><strong>Entity Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">entity</span>
+                        <h3>ClaimID</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-ent-2d00befd-035d-472b-aa0c-4e7f5c1fcfb1</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-33c666e6-788b-5e02-873c-85c370c606e6</div>
+                        </div>
+                    </div>
+<p><strong>Entity Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="section" id="service-nodes">
+            <div class="section-header">
+                <h2>🌐 Service Nodes <span style="opacity: 0.8;">(5 nodes)</span></h2>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">service</span>
+                        <h3>SignalAPIPost</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-68c2a783-eeef-5390-8ad0-ddfb5982d76a</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-750f1a00-727f-5832-99fd-da95982d3e75</div>
+                        </div>
+                    </div>
+<p><strong>Service Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">service</span>
+                        <h3>SignalAPIToken</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-e59ec2bf-d50b-595f-a28c-e51a8025f546</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-25488336-cadb-55d6-bcdb-5f946a258bda</div>
+                        </div>
+                    </div>
+<p><strong>Service Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">service</span>
+                        <h3>PaymentToken</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-ab82ea6d-18d2-505b-8564-909c16949afd</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-565bf933-ed89-5dbe-bdeb-8f3b8e6c1b5a</div>
+                        </div>
+                    </div>
+<p><strong>Service Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">service</span>
+                        <h3>Payments_Details</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-255dd7fb-7360-5e3a-be34-9641b409d45c</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-95b9b096-0733-51b9-a014-cb9604f2c901</div>
+                        </div>
+                    </div>
+<p><strong>Service Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">service</span>
+                        <h3>GetPaymentByClaimId</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-aa2aebae-e730-5990-a1bf-690cf3fa3289</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-bd53a996-30db-5e14-8351-914fd8df3da9</div>
+                        </div>
+                    </div>
+<p><strong>Service Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="section" id="dialogact-nodes">
+            <div class="section-header">
+                <h2>💬 DialogAct Nodes <span style="opacity: 0.8;">(6 nodes)</span></h2>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">dialogAct</span>
+                        <h3>Confirm_TaxID</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-dac-9f2bbf34-bea3-490e-9d3e-2ab684cd9c03</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-1c3fb125-f500-59bf-9246-e8428c9e55cf</div>
+                        </div>
+                    </div>
+<div class="no-code">No prompts found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">dialogAct</span>
+                        <h3>Confirm_PaymentID</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-dac-c12fc292-2b5b-42d6-96e1-cfb4ad5c9e9b</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-8022237f-2190-5b35-bdc2-58545e6bc790</div>
+                        </div>
+                    </div>
+<div class="no-code">No prompts found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">dialogAct</span>
+                        <h3>ConfirmingTaxID</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-dac-19a55f37-e743-4135-8809-e4c20e6e4328</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-eecec0e8-e182-5f1d-bd92-bc44c13f19a9</div>
+                        </div>
+                    </div>
+<div class="no-code">No prompts found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">dialogAct</span>
+                        <h3>RepeatDetails</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-dac-e24cdaa3-6289-40e6-973a-51f25aca940d</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-91c6b374-14b6-558f-b47a-607c0bf98e1e</div>
+                        </div>
+                    </div>
+<div class="no-code">No prompts found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">dialogAct</span>
+                        <h3>CheckForClaimID</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-dac-9453c08e-ae65-4b69-8066-d3e61165f7ef</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-f9df9734-5af9-50fa-b80c-acd6c883568b</div>
+                        </div>
+                    </div>
+<div class="no-code">No prompts found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">dialogAct</span>
+                        <h3>Confirm_ClaimID</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-dac-58df232f-c91e-47d4-b14c-0af605f09ed4</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-6a979962-63ef-51a4-b289-f926b2eb1988</div>
+                        </div>
+                    </div>
+<div class="no-code">No prompts found</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="section" id="message-nodes">
+            <div class="section-header">
+                <h2>📨 Message Nodes <span style="opacity: 0.8;">(5 nodes)</span></h2>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">message</span>
+                        <h3>DisplayPaymentDetails</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-msg-2dbb767b-7d9e-47c1-9949-52dbb6b7edb4</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-ec02e21e-f785-5f2e-b056-078be867f6e1</div>
+                        </div>
+                    </div>
+<div class="no-code">No messages found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">message</span>
+                        <h3>Anythingelse</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-msg-4c9e8977-2df1-4d87-a1da-a38f9533fa41</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-8a6bbede-3fdc-5a7c-8800-14b65388ec55</div>
+                        </div>
+                    </div>
+<div class="no-code">No messages found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">message</span>
+                        <h3>AgentTransferMessage</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-msg-2ed91588-71c1-485e-874e-e6fd2f7eaf5f</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-881a59ab-6978-552b-80cc-552db195516a</div>
+                        </div>
+                    </div>
+<div class="no-code">No messages found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">message</span>
+                        <h3>IntroMessage</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-msg-9c446a9f-c01d-4af4-b21a-a33e8b166e80</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-d8182327-b0ff-5bab-bc75-b21dbe3d3b0b</div>
+                        </div>
+                    </div>
+<div class="no-code">No messages found</div>
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">message</span>
+                        <h3>NonEPCMsg</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-msg-b04ff759-3488-461b-ab8b-a172b882913e</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-f5029eea-f636-5fb0-b575-a3e25a5d74b6</div>
+                        </div>
+                    </div>
+<div class="no-code">No messages found</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="section" id="intent-nodes">
+            <div class="section-header">
+                <h2>🎯 Intent Nodes <span style="opacity: 0.8;">(23 nodes)</span></h2>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>Payment_Details</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">intent0</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-05010834-1a63-5c8f-9722-9deaf1169f37</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>AnotherPayment</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-4607077a-91d1-44a9-b395-c49ca7364627</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-3b30cf16-9e6d-5107-ab14-eb96431e2191</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>Automatic_Ticketing_Status</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-ce8fb2b8-c15a-40ab-a2a3-927936a0ad4b</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-2b594421-540d-537f-9b41-242b66826cf4</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>Automatic_Ticketing_Status</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-dlg-54cf0891-4aa3-489f-aa9b-74bc57df1f46</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-2b594421-540d-537f-9b41-242b66826cf4</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>Password_Reset_Request</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-6982dfb0-3624-4f68-a52c-db0cf2b595cf</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-2edf8969-40c6-5e14-91ef-28f97192259f</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>Password_Reset_Request</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-dlg-8bf0315b-46dc-4003-931d-4b7d261e3801</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-2edf8969-40c6-5e14-91ef-28f97192259f</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>Not_Available</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-f5ddf9d8-3d5a-4c72-ba5a-ba72ad6eb1dd</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-8a4b79a4-16b3-55b5-93c4-22964c165f38</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>Repeat</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-8b0aec21-9c5a-497b-be31-c292e1b78d93</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-1ab90b2f-ddf3-532f-9b10-27d9d11e5178</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>Agent_Transfer</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-10badabf-6dbd-4265-a72f-2de5faf4c93a</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-f625bb37-b972-528a-8ca3-008b3b882009</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>Agent_Transfer</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-42043581-c885-49be-a0ac-46caf5c23e98</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-f625bb37-b972-528a-8ca3-008b3b882009</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>Agent_Transfer</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-538ab456-3b4f-4765-a64c-a46d0e61eff5</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-f625bb37-b972-528a-8ca3-008b3b882009</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>Agent_Transfer</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-8d6f781e-7fb6-45a8-9b2a-c82bb8afb499</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-f625bb37-b972-528a-8ca3-008b3b882009</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>Agent_Transfer</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-d245de6c-9b8d-4b41-be1f-ddda734e634f</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-f625bb37-b972-528a-8ca3-008b3b882009</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>FaxService</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-35154e2d-e627-4b89-ab1b-a11f48f15c6b</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-ae6c9586-fcfe-540d-9d1e-f31515a7e80b</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>Agent_Transfer</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-9f6dcffe-303d-4031-944a-7cd341fff678</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-f625bb37-b972-528a-8ca3-008b3b882009</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>Payment_Info</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-bdf5eba7-9419-4730-8a6e-69cd7e00cc2b</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-60f05388-7147-5271-a931-3c5713a3a559</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>Unknown_intent</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-d9620f9b-c742-4013-a5c6-1c6316f6e190</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-94a2cdb8-a89f-5721-af9f-005019529a11</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>FaxService</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-18ebea79-c405-4531-a742-53f21222164c</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-ae6c9586-fcfe-540d-9d1e-f31515a7e80b</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>Not_Available</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-7ac73832-754f-4eeb-bdd7-fde778b85c4a</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-8a4b79a4-16b3-55b5-93c4-22964c165f38</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>FaxService</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-62bad985-781b-4117-901e-9173f3925250</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-ae6c9586-fcfe-540d-9d1e-f31515a7e80b</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>ClaimNumber</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-301e7c7a-5536-41c0-85b9-d7a3de443562</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-5c87bc88-4313-5b77-a372-063e63c06bc3</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>Agent_Transfer</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-ac584c46-b19d-4913-8ca2-a30924f08e05</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-f625bb37-b972-528a-8ca3-008b3b882009</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+            <div class="node-card">
+                <div class="node-header">
+                    <div class="node-title">
+                        <span class="node-type-badge">intent</span>
+                        <h3>TaxQuestions</h3>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="node-content">
+                    <div class="node-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Node ID</div>
+                            <div class="meta-value">nd-int-6c347ce9-7386-4a20-9b95-7d28dcbce459</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Component ID</div>
+                            <div class="meta-value">dc-85f8c1ba-e3c8-5a8f-b00f-b537694fdae6</div>
+                        </div>
+                    </div>
+<p><strong>Intent Name:</strong> <code></code></p>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        ▲
+    </div>
+
+    <script>
+        // Toggle node expansion
+        document.querySelectorAll('.node-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const card = this.closest('.node-card');
+                card.classList.toggle('expanded');
+            });
+        });
+
+        // Expand all button functionality
+        function expandAll() {
+            document.querySelectorAll('.node-card').forEach(card => {
+                card.classList.add('expanded');
+            });
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.node-card').forEach(card => {
+                card.classList.remove('expanded');
+            });
+        }
+
+        // Back to top button
+        window.addEventListener('scroll', function() {
+            const backToTop = document.querySelector('.back-to-top');
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        // Smooth scroll for TOC links
+        document.querySelectorAll('.toc a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
