@@ -1,0 +1,43 @@
+name: Generate Pages JSON
+
+on:
+  push:
+    paths:
+      - 'pages/*.html'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Generate pages.json
+        run: |
+          mkdir -p data
+          echo "[" > data/pages.json
+
+          first=true
+          for file in pages/*.html; do
+            name=$(basename "$file" .html)
+            path="$file"
+
+            if [ "$first" = true ]; then
+              first=false
+            else
+              echo "," >> data/pages.json
+            fi
+
+            echo "  {\"name\": \"$name\", \"path\": \"$path\"}" >> data/pages.json
+          done
+
+          echo "]" >> data/pages.json
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/pages.json
+          git commit -m "Auto-update pages.json" || echo "No changes"
+          git push
