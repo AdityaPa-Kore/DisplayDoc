@@ -7,13 +7,23 @@ async function loadPages() {
   pages.forEach(page => {
     const option = document.createElement("option");
     option.value = page.path;
-    option.textContent = page.name;
+    option.textContent = page.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     dropdown.appendChild(option);
   });
 }
 
 document.getElementById("pageSelect").addEventListener("change", (e) => {
-  document.getElementById("viewer").src = e.target.value;
+  const viewer = document.getElementById("viewer");
+  const emptyState = document.getElementById("emptyState");
+
+  if (e.target.value) {
+    viewer.src = e.target.value;
+    viewer.classList.add("loaded");
+    emptyState.classList.add("hidden");
+  } else {
+    viewer.classList.remove("loaded");
+    emptyState.classList.remove("hidden");
+  }
 });
 
 loadPages();
